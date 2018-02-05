@@ -15,12 +15,15 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="32"></RowDefinition>
+            <RowDefinition Height="32"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="64"></RowDefinition>
         </Grid.RowDefinitions>
-        <Label VerticalContentAlignment="Center">Activity</Label>
-        <TextBox Name="TxtActivity" Grid.Column="1" VerticalContentAlignment="Center"/>
-        <ListView Name="LstOutput"  Grid.Row="1" Grid.ColumnSpan="2"/>
-        <Button Name="BtnLog" Grid.Row="2" Grid.ColumnSpan="2" VerticalContentAlignment="Center" Click="BtnLog_OnClick">Log</Button>
+        <Label VerticalContentAlignment="Center">Intervall in minutes</Label>
+        <TextBox Name="TxtIntervall" Grid.Column="1" VerticalContentAlignment="Center" LostFocus="TxtIntervall_OnLostFocus">0.1</TextBox>
+        <Label VerticalContentAlignment="Center" Grid.Row="1">Activity</Label>
+        <TextBox Name="TxtActivity" Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center">Idle</TextBox>
+        <ListView Name="LstOutput"  Grid.Row="2" Grid.ColumnSpan="3"/>
+        <Button Name="BtnLog" Grid.Row="3" Grid.ColumnSpan="3" VerticalContentAlignment="Center" Click="BtnLog_OnClick">Log</Button>
     </Grid>
 </Window>

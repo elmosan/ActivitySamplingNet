@@ -3,12 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
-using ToastNotifications;
-using ToastNotifications.Core;
-using ToastNotifications.Lifetime;
-using ToastNotifications.Messages;
-using ToastNotifications.Position;
-using Application = System.Windows.Application;
+
 
 namespace ActivitySampling
 {
@@ -17,59 +12,32 @@ namespace ActivitySampling
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Notifier _notifier = null;
-        private LogFile _logFile = null;
+        private readonly NotifyTimer  _notifier = null;
+        private readonly LogFile _logFile = null;
+        private readonly NotifyIcon ballon = null;
 
         public MainWindow()
         {
             InitializeComponent();
+            _notifier = new NotifyTimer(15 * 60 * 1000);
             _logFile = new LogFile();
-        }
+            //_notifier.OnBallonClicked += NotifierTimerOnBallonClicked;
+            _notifier.OnTimerElapsed += NotifierOnOnTimerElapsed;
 
-        public void Notify()
-        {
-            _notifier = new Notifier(cfg =>
+            ballon = new NotifyIcon
             {
-                cfg.PositionProvider = new WindowPositionProvider(
-                    parentWindow: Application.Current.MainWindow,
-                    corner: Corner.TopRight,
-                    offsetX: 10,
-                    offsetY: 10);
-
-                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                    notificationLifetime: TimeSpan.FromSeconds(3),
-                    maximumNotificationCount: MaximumNotificationCount.FromCount(5));
-
-                cfg.Dispatcher = Application.Current.Dispatcher;
-            });
-
-            var title = "ActivitySampling";
-            var message = "Test Messsage";
-
-            var options = new MessageOptions { NotificationClickAction = n =>
-            {
-                n.Close();
-                _notifier.ShowSuccess("clicked!");
-            }};
-
-            //notifier.ShowInformation(message, options);
-            //notifier.ShowSuccess(message);
-            //notifier.ShowWarning(message);
-            //notifier.ShowError(message);
-            
-            NotifyIcon ballon = new NotifyIcon();
-            ballon.Text = message;
-            ballon.BalloonTipText = message;
-            ballon.BalloonTipTitle = title;
-            ballon.Visible = true;
-            ballon.Icon = new Icon("ActivityMonitor.ico");
-            ballon.ShowBalloonTip(1000, title, message, ToolTipIcon.Info);
-            ballon.BalloonTipClicked += (sender, args) => { };
+                Text = "ActivitySampler",
+                BalloonTipText = "ActivitySampler",
+                BalloonTipTitle = "ActivitySampler",
+                Visible = true,
+                Icon = new Icon("ActivityMonitor.ico")
+            };
+            ballon.BalloonTipClicked += BallonOnBalloonTipClicked;
+            //ballon.BalloonTipClosed += BallonNotifierOnBalloonTipClosed;
         }
 
         private void MainWindow_OnActivated(object sender, EventArgs e)
         {
-            Notify();
         }
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
@@ -79,8 +47,29 @@ namespace ActivitySampling
 
         private void BtnLog_OnClick(object sender, RoutedEventArgs e)
         {
-            LstOutput.Items.Insert(0, $"{DateTime.Now}: {TxtActivity.Text}");
-            _logFile.Write(TxtActivity.Text);
+            WriteLog();
+        }
+
+        private void WriteLog()
+        {
+            var msg = $"{DateTime.Now}: {TxtActivity.Text}";
+            LstOutput.Items.Insert(0, msg);
+            _logFile.Write(msg);
+        }
+
+        private void NotifierOnOnTimerElapsed(object sender, EventArgs eventArgs)
+        {
+            ballon.ShowBalloonTip(3000, "Current Activity", "What are you doing?", ToolTipIcon.Info);
+        }
+
+        private void BallonOnBalloonTipClicked(object sender, EventArgs eventArgs)
+        {
+            WriteLog();
+        }
+
+        private void TxtIntervall_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            _notifier.SetIntervall(int.Parse(TxtIntervall.Text));
         }
     }
 }
