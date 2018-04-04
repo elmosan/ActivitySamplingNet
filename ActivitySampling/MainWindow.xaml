@@ -10,8 +10,9 @@
         Closing="MainWindow_OnClosing">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="1.2*"></ColumnDefinition>
             <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="0.8*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="32"></RowDefinition>
@@ -20,9 +21,10 @@
             <RowDefinition Height="64"></RowDefinition>
         </Grid.RowDefinitions>
         <Label VerticalContentAlignment="Center">Intervall in minutes</Label>
-        <TextBox Name="TxtIntervall" Grid.Column="1" VerticalContentAlignment="Center" LostFocus="TxtIntervall_OnLostFocus">0.1</TextBox>
+        <TextBox Name="TxtIntervall" Grid.Column="1" VerticalContentAlignment="Center">15</TextBox>
+        <Button Name="BtnRestart" Grid.Column="2" VerticalContentAlignment="Center" Click="BtnRestart_OnClick">Restart</Button>
         <Label VerticalContentAlignment="Center" Grid.Row="1">Activity</Label>
-        <TextBox Name="TxtActivity" Grid.Row="1" Grid.Column="2" VerticalContentAlignment="Center">Idle</TextBox>
+        <TextBox Name="TxtActivity" Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center">Idle</TextBox>
         <ListView Name="LstOutput"  Grid.Row="2" Grid.ColumnSpan="3"/>
         <Button Name="BtnLog" Grid.Row="3" Grid.ColumnSpan="3" VerticalContentAlignment="Center" Click="BtnLog_OnClick">Log</Button>
     </Grid>

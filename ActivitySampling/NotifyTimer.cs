@@ -36,7 +36,9 @@ namespace ActivitySampling
 
         public void SetIntervall(int intervall)
         {
+            _timer.Stop();
             _timer.Interval = intervall;
+            _timer.Start();
         }
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
