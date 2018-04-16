@@ -52,7 +52,7 @@ namespace ActivitySampling
             {
                 var msg = line.Split(';')[1].Substring(1);
                 var date = line.Substring(0, 10).Replace(".", "");
-                var lastDate = DateTime.Now.AddDays(-3).ToString("yyyyMMdd");
+                var lastDate = DateTime.Now.AddDays(-6).ToString("yyyyMMdd");
 
                 date = $"{date.Substring(4, 4)}{date.Substring(2, 2)}{date.Substring(0, 2)}";
 
