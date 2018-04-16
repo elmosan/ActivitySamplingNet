@@ -42,10 +42,7 @@ namespace ActivitySampling
             //_notifier.OnBallonClicked += NotifierTimerOnBallonClicked;
             _notifier.OnTimerElapsed += NotifierOnOnTimerElapsed;
 
-            var menuItems = new List<MenuItem>();
-            MenuItem menuItemExit = new MenuItem("Exit");
-            menuItemExit.Click += MenuItemOnClick;
-            menuItems.Add(menuItemExit);
+            List<MenuItem> menuItems = ContextMenuItems();
             ContextMenu contextMenu = new ContextMenu(menuItems.ToArray());
 
             var test = Resources;
@@ -65,21 +62,6 @@ namespace ActivitySampling
             TxtActivity.TextChanged += TxtActivityTextChanged;
             LstOutput.MouseDoubleClick += LstOutputOnMouseDoubleClick;
             LstOutput.KeyUp += LstOutputOnKeyUp;
-        }
-
-        private void MenuItemOnClick(object sender, EventArgs eventArgs)
-        {
-            var menuItem = (MenuItem)sender;
-
-            switch (menuItem?.Text)
-            {
-                case "Exit":
-                    Application.Current.Shutdown();
-                    break;
-
-                default:
-                    throw new ArgumentException();
-            }
         }
 
         private void MainWindow_OnActivated(object sender, EventArgs e)
@@ -112,7 +94,39 @@ namespace ActivitySampling
             var msg = _logFile.Write(TxtActivity.Text);
             LstOutput.Items.Insert(0, msg);
         }
-        
+
+        private List<MenuItem> ContextMenuItems()
+        {
+            var menuItems = new List<MenuItem>();
+            MenuItem menuItemOpen = new MenuItem("Open");
+            menuItemOpen.Click += MenuItemOnClick;
+            menuItems.Add(menuItemOpen);
+
+            MenuItem menuItemExit = new MenuItem("Exit");
+            menuItemExit.Click += MenuItemOnClick;
+            menuItems.Add(menuItemExit);
+
+            return menuItems;
+        }
+
+        private void MenuItemOnClick(object sender, EventArgs eventArgs)
+        {
+            var menuItem = (MenuItem)sender;
+
+            switch (menuItem?.Text)
+            {
+                case "Open":
+                    WindowState = WindowState.Normal;
+                    break;
+                case "Exit":
+                    Application.Current.Shutdown();
+                    break;
+
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
         private void NotifierOnOnTimerElapsed(object sender, EventArgs eventArgs)
         {
             var activity = string.IsNullOrEmpty(_activity) ? "" : $"\n\nLast activity: {_activity}";
@@ -133,7 +147,9 @@ namespace ActivitySampling
         private void LstOutputOnMouseDoubleClick(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
             var entry = LstOutput.SelectedItem as LogEntry;
-            TxtActivity.Text = entry?.Message;
+
+            if (entry?.Message != null)
+                TxtActivity.Text = entry.Message;
         }
 
         private void LstOutputOnKeyUp(object sender, KeyEventArgs keyEventArgs)
